@@ -1,0 +1,504 @@
+:root {
+    --bg-color: #1a1a1a;
+    --panel-border: rgba(255, 255, 255, 0.1);
+    --text-main: #f0f0f0;
+    --text-dim: #888888;
+    --accent: #d1d1d1;
+}
+
+body, html {
+    margin: 0;
+    padding: 0;
+    background: var(--bg-color);
+    color: var(--text-main);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    overflow: hidden;
+    user-select: none; /* Prevents global highlighting */
+    -webkit-user-select: none;
+}
+
+.triptych-container {
+    display: flex;
+    width: 100vw;
+    height: 100vh;
+}
+
+.panel {
+    flex: 1;
+    height: 100%;
+    border-right: 1px solid var(--panel-border);
+    transition: all 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+    position: relative;
+    cursor: pointer;
+    background: var(--bg-color);
+    overflow: hidden;
+}
+
+.panel.expanded {
+    flex: 4;
+    cursor: default;
+}
+
+.panel.hidden {
+    flex: 0.2;
+    opacity: 0.4;
+}
+
+/* UI Elements */
+.panel-label {
+    position: absolute;
+    bottom: 40px;
+    left: 20px;
+    font-family: monospace;
+    font-size: 0.7rem;
+    letter-spacing: 4px;
+    color: var(--text-dim);
+    transform: rotate(-90deg);
+    transform-origin: left bottom;
+    white-space: nowrap;
+}
+
+.panel-content {
+    position: absolute;
+    top: 0;
+    left: 0; 
+    width: 100%;
+    min-width: 800px; 
+    height: 100%;
+    
+    /* 50px top padding perfectly aligns the h2 with the logo images */
+    padding: 50px 60px; 
+    box-sizing: border-box;
+    
+    opacity: 0; 
+    pointer-events: none;
+    /* Fast fade-out when panel closes, no delay */
+    transition: opacity 0.3s ease; 
+}
+
+.content-inner, .feed-preview {
+    width: 600px; 
+    max-width: 80vw; 
+    pointer-events: auto;
+    user-select: text;
+    -webkit-user-select: text;
+}
+
+.panel-preview {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+}
+
+#bg, #eng-bg {
+    width: 100% !important;
+    height: 100% !important;
+    outline: none;
+}
+
+h2 { 
+    font-weight: 300; 
+    letter-spacing: 2px; 
+    text-transform: uppercase; 
+    margin-top: 0; 
+    line-height: 1; /* Locks vertical alignment */
+}
+p { color: var(--text-dim); line-height: 1.6; }
+
+/* Globe Overlays */
+#hud-svg {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    pointer-events: none;
+}
+
+.tag-text {
+    border-left: 1px solid var(--text-main);
+    padding-left: 8px;
+    letter-spacing: 1px;
+}
+
+/* Feed & Project Previews */
+.feed-preview, .project-preview {
+    padding: 40px;
+    margin-top: 20vh;
+}
+
+.back-btn {
+    background: transparent;
+    border: 1px solid var(--panel-border);
+    color: var(--text-dim);
+    padding: 8px 16px;
+    margin-bottom: 40px;
+    font-family: monospace;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    pointer-events: auto; 
+}
+
+.back-btn:hover {
+    color: var(--text-main);
+    border-color: var(--text-main);
+}
+
+#labels-container {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    z-index: 2; 
+    pointer-events: none; 
+}
+
+/* --- TACTICAL HUD LABELS --- */
+.city-label {
+    position: absolute;
+    top: 0; left: 0;
+    pointer-events: none; 
+}
+
+.ui-hitbox {
+    position: absolute;
+    width: 40px; 
+    height: 40px;
+    left: -20px; 
+    top: -20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: crosshair;
+    pointer-events: auto; 
+}
+
+.ui-node {
+    width: 4px;
+    height: 4px;
+    background: var(--accent);
+    box-shadow: 0 0 4px var(--accent);
+    transform: scale(var(--dynamic-scale, 1));
+    /* Was `all`, which re-armed a transition on every per-frame style write. */
+    transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1),
+                background 0.2s cubic-bezier(0.16, 1, 0.3, 1),
+                box-shadow 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.city-label:hover .ui-node {
+    transform: scale(calc(var(--dynamic-scale, 1) * 2.5));
+    background: #ffffff; 
+    box-shadow: 0 0 8px #ffffff;
+}
+
+.ui-content {
+    position: absolute;
+    left: 12px; 
+    top: -10px; 
+    
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start; 
+    width: max-content;
+    
+    background: rgba(15, 15, 15, 0.85);
+    padding: 8px 10px;
+    border-left: 2px solid var(--accent);
+    border-radius: 0 4px 4px 0;
+
+    opacity: 0;
+    pointer-events: none;
+    transform: translateX(-10px);
+
+    /* visibility keeps the 33 closed panels (and their photos) out of paint entirely;
+       it flips instantly on open and only after the fade on close. */
+    visibility: hidden;
+    transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+                transform 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+                visibility 0s linear 0.3s;
+}
+
+.city-label:hover .ui-content {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateX(0);
+
+    /* backdrop-filter only while open. 33 permanent blur layers being repositioned
+       every frame cost far more than one on hover. */
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+
+    visibility: visible;
+    transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+                transform 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+                visibility 0s;
+}
+
+.ui-city-name {
+    font-family: monospace;
+    font-size: 11px;
+    letter-spacing: 2px;
+    color: var(--text-main);
+}
+
+.ui-details {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start; 
+    gap: 8px;
+    margin-top: 8px; 
+}
+
+.ui-details img {
+    width: 160px;
+    height: 90px;
+    object-fit: cover;
+    border: 1px solid var(--panel-border);
+    filter: grayscale(100%) contrast(1.2); 
+}
+
+.ui-details p {
+    margin: 0;
+    font-size: 9px;
+    font-family: monospace;
+    color: var(--text-dim);
+    line-height: 1.4;
+    max-width: 160px;
+    white-space: normal;
+}
+
+/* --- FIELD REPORTS IMAGE STYLING --- */
+.mini-post { 
+    margin-bottom: 20px; 
+    border-bottom: 1px solid var(--panel-border); 
+    padding-bottom: 15px; 
+    display: flex;          
+    gap: 15px;              
+    align-items: center;    
+}
+
+.mini-post-img {
+    width: 80px;            
+    height: 80px;
+    object-fit: cover;      
+    border-radius: 4px;
+    border: 1px solid var(--panel-border);
+    filter: grayscale(100%); 
+    transition: filter 0.3s ease;
+}
+
+.mini-post:hover .mini-post-img {
+    filter: grayscale(0%);  
+}
+
+.mini-post-content {
+    flex: 1;                
+}
+
+.mini-post-content p {
+    font-size: 0.8rem;
+    margin: 5px 0 0 0;
+}
+
+
+/* --- ATTRIBUTION LOGOS --- */
+.attribution-logos {
+    position: absolute;
+    top: 30px;
+    right: 30px;
+    display: flex;
+    gap: 20px;
+    opacity: 0;
+    pointer-events: none;
+    z-index: 10;
+    /* Fast fade-out when panel closes, no delay */
+    transition: opacity 0.3s ease; 
+}
+
+/* UNIFIED EXPANDED TRANSITIONS */
+.panel.expanded .attribution-logos {
+    opacity: 1;
+    pointer-events: auto; /* Logos need to be clickable */
+    transition: opacity 0.5s ease 0.2s; 
+}
+
+.panel.expanded .panel-content {
+    opacity: 1;
+    /* We DO NOT add pointer-events: auto here so the canvas stays interactive! */
+    transition: opacity 0.5s ease 0.2s; 
+}
+
+.logo-category {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+}
+
+.category-label {
+    font-size: 0.6rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-dim);
+    font-family: monospace;
+}
+
+.logo-row {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.logo-divider {
+    width: 1px;
+    height: 35px;
+    background: var(--panel-border);
+    margin: 0 5px;
+}
+
+.logo-item {
+    position: relative;
+    display: block;
+    text-decoration: none;
+}
+
+.logo-item img {
+    height: 35px; 
+    width: auto;
+    filter: grayscale(100%) opacity(0.7);
+    transition: all 0.3s ease;
+}
+
+.logo-item:hover img {
+    filter: grayscale(0%) opacity(1);
+}
+
+.logo-tooltip {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    margin-top: 15px;
+    width: max-content;
+    max-width: 220px;
+    background: rgba(15, 15, 15, 0.9);
+    backdrop-filter: blur(4px);
+    border-right: 2px solid var(--accent); 
+    padding: 10px;
+    
+    font-family: monospace;
+    color: var(--text-dim);
+    font-size: 0.7rem;
+    line-height: 1.5;
+    text-align: right;
+    
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(-10px);
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.logo-tooltip strong {
+    color: var(--text-main);
+    font-size: 0.8rem;
+}
+
+.logo-item:hover .logo-tooltip {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* --- HIDE CONTENT IN MINIMIZED SECTIONS --- */
+/* (Logos and text are handled by their default opacity: 0 state now) */
+.panel.hidden .panel-preview canvas,
+.panel.hidden .panel-preview #labels-container,
+.panel.hidden .panel-preview .feed-preview {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.panel-preview canvas,
+.panel-preview #labels-container,
+.panel-preview .feed-preview {
+    transition: opacity 0.4s ease;
+}
+
+/* --- FOOTER: legal links, visible on every view --- */
+.site-footer {
+    position: fixed;
+    right: 20px;
+    bottom: 14px;
+    z-index: 20;
+    display: flex;
+    gap: 8px;
+    font-family: monospace;
+    font-size: 0.65rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+}
+
+.site-footer a {
+    color: var(--text-dim);
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.site-footer a:hover,
+.site-footer a:focus-visible {
+    color: var(--text-main);
+}
+
+/* --- LEGAL PAGES (impressum.html, privacy.html) --- */
+/* On <html>: the global `body, html { overflow: hidden }` would otherwise block scrolling. */
+html.legal,
+html.legal body {
+    overflow: auto;
+    user-select: text;
+    -webkit-user-select: text;
+}
+
+.legal-page {
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 60px 20px 80px;
+    line-height: 1.6;
+}
+
+.legal-back {
+    font-family: monospace;
+    font-size: 0.75rem;
+    letter-spacing: 2px;
+    color: var(--text-dim);
+    text-decoration: none;
+}
+
+.legal-back:hover { color: var(--text-main); }
+
+.legal-page h1 {
+    font-weight: 300;
+    font-size: 1.6rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin: 40px 0 8px;
+}
+
+.legal-page h2 {
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 2px;
+    line-height: 1.4;
+    margin: 36px 0 8px;
+}
+
+.legal-page p,
+.legal-page li,
+.legal-page address {
+    color: var(--accent);
+    font-style: normal;
+}
+
+.legal-page a { color: var(--text-main); }
+
+.legal-page .updated {
+    font-family: monospace;
+    font-size: 0.75rem;
+    color: var(--text-dim);
+}

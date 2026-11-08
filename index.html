@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PORTFOLIO // 2026</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <main class="triptych-container">
+        
+        <section id="travel" class="panel">
+            <div class="panel-preview">
+                <canvas id="bg"></canvas>
+                <div id="labels-container"></div>
+                <div class="panel-label">01 // LOREM_IPSUM</div>
+            </div>
+            <div class="panel-content">
+                <div class="content-inner">
+                    <h2>LOREM IPSUM DOLOR</h2>
+                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="journalism" class="panel">
+            <div class="panel-preview">
+                <div class="feed-preview">
+                    <article class="mini-post">
+                        <img src="assets/images/thumbs/_DSC8231.jpg" alt="Placeholder" class="mini-post-img" width="80" height="80" loading="lazy" decoding="async">
+                        <div class="mini-post-content">
+                            <span class="date">MMM YY</span>
+                            <h3>Lorem ipsum dolor sit</h3>
+                        </div>
+                    </article>
+                    <article class="mini-post">
+                        <img src="assets/images/thumbs/_DSC8040.jpg" alt="Placeholder" class="mini-post-img" width="80" height="80" loading="lazy" decoding="async">
+                        <div class="mini-post-content">
+                            <span class="date">MMM YY</span>
+                            <h3>Consectetur adipiscing elit</h3>
+                        </div>
+                    </article>
+                    <article class="mini-post">
+                        <img src="assets/images/thumbs/DSC09689.jpg" alt="Placeholder" class="mini-post-img" width="80" height="80" loading="lazy" decoding="async">
+                        <div class="mini-post-content">
+                            <span class="date">MMM YY</span>
+                            <h3>Sed do eiusmod tempor</h3>
+                        </div>
+                    </article>
+                </div>
+                <div class="panel-label">02 // DOLOR_SIT</div>
+            </div>
+            <div class="panel-content">
+                <div class="content-inner">
+                    <h2>DOLOR SIT AMET</h2>
+                    <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="engineering" class="panel expanded">
+            <div class="attribution-logos">
+                
+                <div class="logo-category">
+                    <span class="category-label">Organization</span>
+                    <div class="logo-row">
+                        <a href="https://www.tu-darmstadt.de/" target="_blank" class="logo-item">
+                            <img src="assets/images/tuda_logo.svg" alt="TU Darmstadt">
+                            <div class="logo-tooltip">
+                                <strong>TU Darmstadt</strong><br>
+                                Hardware research and PCB prototyping.
+                            </div>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="logo-divider"></div>
+
+                <div class="logo-category">
+                    <span class="category-label">Affiliated</span>
+                    <div class="logo-row">
+                        <a href="#" target="_blank" class="logo-item">
+                            <img src="assets/images/ieee_logo.png" alt="IEEE">
+                            <div class="logo-tooltip">
+                                <strong>IEEE</strong><br>
+                                Student branch affiliation.
+                            </div>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="logo-divider"></div>
+
+                <div class="logo-category">
+                    <span class="category-label">Powered By</span>
+                    <div class="logo-row">
+                        <a href="#" class="logo-item">
+                            <img src="assets/images/fusion_logo.svg" alt="Fusion 360">
+                            <div class="logo-tooltip">
+                                <strong>Fusion 360</strong><br>
+                                CAD modeling and enclosure design.
+                            </div>
+                        </a>
+                        <a href="#" class="logo-item">
+                            <img src="assets/images/kicad_logo.svg" alt="KiCad">
+                            <div class="logo-tooltip">
+                                <strong>KiCad</strong><br>
+                                Schematic capture and PCB layout.
+                            </div>
+                        </a>
+                        <a href="#" class="logo-item">
+                            <img src="assets/images/cpp_logo.svg" alt="C++">
+                            <div class="logo-tooltip">
+                                <strong>C++</strong><br>
+                                Microcontroller firmware.
+                            </div>
+                        </a>
+                        <a href="#" class="logo-item">
+                            <img src="assets/images/python_logo.svg" alt="Python">
+                            <div class="logo-tooltip">
+                                <strong>Python</strong><br>
+                                Scripting, tooling and data processing.
+                            </div>
+                        </a>
+                        <a href="#" class="logo-item">
+                            <img src="assets/images/git_logo.svg" alt="Git">
+                            <div class="logo-tooltip">
+                                <strong>Git</strong><br>
+                                Version control.
+                            </div>
+                        </a>
+                    </div>
+                </div>
+                
+            </div>
+
+            <div class="panel-preview">
+                <canvas id="eng-bg"></canvas>
+                <div class="panel-label">03 // AMET_ELIT</div>
+            </div>
+            <div class="panel-content">
+                <div class="content-inner">
+                    <h2>CONSECTETUR ADIPISCING</h2>
+                    <p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <a href="impressum.html">Impressum</a>
+        <span aria-hidden="true">·</span>
+        <a href="privacy.html">Privacy</a>
+    </footer>
+
+    <!-- Self-hosted so visitors' browsers only talk to this site and GoatCounter (see privacy.html). -->
+    <script src="vendor/three-0.136.0/build/three.min.js"></script>
+    <script src="vendor/three-0.136.0/examples/js/controls/OrbitControls.js"></script>
+    <script src="vendor/three-0.136.0/examples/js/loaders/GLTFLoader.js"></script>
+    <script src="vendor/three-0.136.0/examples/js/environments/RoomEnvironment.js"></script>
+    <script src="vendor/three-0.136.0/examples/js/utils/BufferGeometryUtils.js"></script>
+    <script src="vendor/three-0.136.0/examples/js/libs/meshopt_decoder.js"></script>
+    <script src="main.js"></script>
+    <script data-goatcounter="https://edwin-peng.goatcounter.com/count" async src="vendor/goatcounter/count.js"></script>
+</body>
+</html>
